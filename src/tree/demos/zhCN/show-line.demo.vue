@@ -1,20 +1,19 @@
 <markdown>
-# 级联选择
-
-设定 `cascade` 进行级联选择。
-</markdown>
+  # 连接线
+  </markdown>
 
 <template>
-  <n-tree
-    block-line
-    cascade
-    checkable
-    :selectable="false"
-    :data="data"
-    :default-expanded-keys="defaultExpandedKeys"
-    :default-checked-keys="defaultCheckedKeys"
-    @update:checked-keys="updateCheckedKeys"
-  />
+  <n-space vertical>
+    <n-switch v-model:value="showLine" />
+    <n-tree
+      :show-line="showLine"
+      :default-expanded-keys="defaultExpandedKeys"
+      :data="data"
+      checkable
+      expand-on-click
+      selectable
+    />
+  </n-space>
 </template>
 
 <script lang="ts">
@@ -45,19 +44,9 @@ function createLabel (level: number): string {
 export default defineComponent({
   setup () {
     return {
+      showLine: ref(false),
       data: createData(),
-      defaultExpandedKeys: ref(['40', '4030', '403020']),
-      defaultCheckedKeys: ref(['40302010']),
-      updateCheckedKeys: (
-        keys: Array<string | number>,
-        options: Array<TreeOption | null>,
-        meta: {
-          node: TreeOption | null
-          action: 'check' | 'uncheck'
-        }
-      ) => {
-        console.log('updateCheckedKeys', keys, options, meta)
-      }
+      defaultExpandedKeys: ref(['40', '4030', '403020'])
     }
   }
 })
