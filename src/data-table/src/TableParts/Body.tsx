@@ -170,7 +170,6 @@ export default defineComponent({
       mergedSortStateRef,
       virtualScrollRef,
       componentId,
-      scrollPartRef,
       mergedTableLayoutRef,
       childTriggerColIndexRef,
       indentRef,
@@ -320,9 +319,6 @@ export default defineComponent({
     }
     function handleMouseleaveTable (): void {
       hoverKeyRef.value = null
-    }
-    function handleMouseenterTable (): void {
-      scrollPartRef.value = 'body'
     }
     function virtualListContainer (): HTMLElement {
       const { value } = virtualListRef
@@ -498,7 +494,6 @@ export default defineComponent({
       renderExpandIcon: renderExpandIconRef,
       scrollbarProps: scrollbarPropsRef,
       setHeaderScrollLeft,
-      handleMouseenterTable,
       handleVirtualListScroll,
       handleVirtualListResize,
       handleMouseleaveTable,
@@ -580,7 +575,6 @@ export default defineComponent({
               childTriggerColIndex,
               expandable,
               rowProps,
-              handleMouseenterTable,
               handleMouseleaveTable,
               renderExpand,
               summary,
@@ -802,6 +796,9 @@ export default defineComponent({
                       rowData,
                       actualRowIndex
                     )
+                    const indentOffsetStyle = {
+                      '--indent-offset': '' as string | number
+                    }
                     return (
                       <td
                         {...resolvedCellProps}
@@ -812,6 +809,7 @@ export default defineComponent({
                             left: pxfy(fixedColumnLeftMap[colKey]?.start),
                             right: pxfy(fixedColumnRightMap[colKey]?.start)
                           },
+                          indentOffsetStyle as CSSProperties,
                           resolvedCellProps?.style || ''
                         ]}
                         colspan={mergedColSpan}
@@ -846,7 +844,8 @@ export default defineComponent({
                         {hasChildren && colIndex === childTriggerColIndex
                           ? [
                               repeat(
-                                isSummary ? 0 : rowInfo.tmNode.level,
+                                (indentOffsetStyle['--indent-offset'] =
+                                  isSummary ? 0 : rowInfo.tmNode.level),
                                 <div
                                   class={`${mergedClsPrefix}-data-table-indent`}
                                   style={indentStyle}
@@ -935,7 +934,6 @@ export default defineComponent({
                 <table
                   class={`${mergedClsPrefix}-data-table-table`}
                   onMouseleave={handleMouseleaveTable}
-                  onMouseenter={handleMouseenterTable}
                   style={{
                     tableLayout: this.mergedTableLayout
                   }}
@@ -969,7 +967,6 @@ export default defineComponent({
                     clsPrefix: mergedClsPrefix,
                     id: componentId,
                     cols,
-                    onMouseenter: handleMouseenterTable,
                     onMouseleave: handleMouseleaveTable
                   }}
                   showScrollbar={false}
